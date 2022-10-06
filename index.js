@@ -12,15 +12,18 @@ let RED = "#700", BLUE = "#007";
 
 function mouseClicked(){
     let p = new Vector(mouseX, mouseY);
-    if(mode=="red"){
-        entities.push( Entity.createNew(p.x,p.y, RED) ) ;
-    }else if(mode=="blue") {
-        entities.push( Entity.createNew(p.x,p.y, BLUE) ) ;
-    }
-    if(mode=="test"){
-        let outp = net.run(normalizeInput(new Vector(mouseX, mouseY)));
-        console.log(outp[0])
-        entities.push( Entity.createNew(mouseX, mouseY, outp[0]<=0.5?RED:BLUE) )
+    switch(mode){
+        case "red":
+            entities.push( Entity.createNew(p.x,p.y, RED) ) ;
+            break;
+        case "blue":
+            entities.push( Entity.createNew(p.x,p.y, BLUE) ) ;
+            break;
+        case "test":
+            let outp = net.run(normalizeInput(new Vector(mouseX, mouseY)));
+            console.log(outp[0])
+            entities.push( Entity.createNew(mouseX, mouseY, outp[0]<=0.5?RED:BLUE) );
+            break;
     }
 }
 function setup() {
@@ -41,15 +44,10 @@ function draw() {
 let net;
 function Main(){
     $("#train").addEventListener('click', train);
-    $("#cred").addEventListener('click', ()=>{
-        mode = 'red';
-    });
-    $("#cblue").addEventListener('click', ()=>{
-        mode = 'blue';
-    });
-    $("#test").addEventListener('click', ()=>{
-        mode = 'test';
-    });
+    $("#cred").addEventListener('click', ()=>{ mode = 'red'; });
+    $("#cblue").addEventListener('click', ()=>{ mode = 'blue'; });
+    $("#test").addEventListener('click', ()=>{ mode = 'test'; });
+    
     net = new brain.NeuralNetwork();
 }
 function normalizeInput(pos){
@@ -68,7 +66,9 @@ function train(){
     }));
     console.log(trainable_data);
     console.log("training neurons");
+    alert("training neurons");
     console.log(net.train(trainable_data));
+    alert("training complete")
     console.log("training complete");
 
 }
