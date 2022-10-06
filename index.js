@@ -6,19 +6,22 @@ let {log} = console;
 
 /** @type {Vector} */
 let canvasDim;
-let entities = [];
+let tocalc_entries = [], TOCALC_ENTITY_RADIUS = 10;
+let abstract_entries = []; let ABSTRACT_ENTITY_RADIUS = 4;
 let mode = 'red'; // red/blue/test
 let RED = "#700", BLUE = "#007";
+let HIDDEN_LAYERS_CONF = [8,16,8];
+
 
 function mouseClicked(e){
     if(!e.target.classList.contains('p5Canvas')) return;
     let p = new Vector(mouseX, mouseY);
     switch(mode){
         case "red":
-            entities.push( Entity.createNew(p.x,p.y, RED) ) ;
+            tocalc_entries.push( Entity.createNew(p.x,p.y, RED) ) ;
             break;
         case "blue":
-            entities.push( Entity.createNew(p.x,p.y, BLUE) ) ;
+            tocalc_entries.push( Entity.createNew(p.x,p.y, BLUE) ) ;
             break;
         case "test":
             showTestFor(mouseX, mouseY);
@@ -34,7 +37,7 @@ function setup() {
 function draw() {
     background(220);
     
-    for(let entity of entities){
+    for(let entity of [...tocalc_entries,...abstract_entries]){
         entity.draw();
     }
 
@@ -48,7 +51,9 @@ function Main(){
     $("#test").addEventListener('click', ()=>{ mode = 'test'; });
     $("#testfull").addEventListener('click', testFullCanvas);
     
-    net = new brain.NeuralNetwork();
+    net = new brain.NeuralNetwork({
+        hiddenLayers:[2]
+    });
 }
 function normalizeInput(pos){
     return [pos.x/height, pos.y/height]
@@ -58,17 +63,23 @@ function normalizeOutput(color){
 }
 
 function train(){
-    console.log(entities)
-    let trainable_data = [...entities];
+
+    net = new brain.NeuralNetwork({ //Normally initialization is done once but for variable config, this is being multilpe times
+        hiddenLayers:HIDDEN_LAYERS_CONF
+    });
+
+
+    console.log(tocalc_entries)
+    let trainable_data = [...tocalc_entries];
     trainable_data = trainable_data.map(dat=>({
         input: normalizeInput(dat.position),
         output: normalizeOutput(dat.color)
     }));
     console.log(trainable_data);
     console.log("training neurons");
-    alert("training neurons");
+    // alert("training neurons");
     console.log(net.train(trainable_data));
-    alert("training complete")
+    // alert("training complete")
     console.log("training complete");
 
 }
@@ -77,12 +88,14 @@ function showTestFor(x,y){
     let outp = net.run(normalizeInput(new Vector(x,y)));
     // console.log(outp[0]);
     let testEntry = Entity.createNew(x,y, outp[0]<=0.5?RED:BLUE);
-    entities.push( testEntry );
+    testEntry.radius = ABSTRACT_ENTITY_RADIUS;
+    abstract_entries.push( testEntry );
 }
 
 
 function testFullCanvas(){
-    let chunks = Number(prompt("Enter number of canvas division",20)); //divisions
+    let chunks = Number(prompt("Enter number of canvas division",100)); //divisions
+    abstract_entries = [];
     for(let j = 0; j<=height; j+= height/chunks){
         for(let i = 0; i<=width; i+=width/chunks){
             // console.log("showT",i,j)

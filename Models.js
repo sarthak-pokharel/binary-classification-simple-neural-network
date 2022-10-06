@@ -17,7 +17,7 @@ class Vector extends Array {
 class Entity {
     constructor(pos, color){
         this.position = pos;
-        this.radius = 10;
+        this.radius = TOCALC_ENTITY_RADIUS;
         this.color = color;
     }
     draw(){
