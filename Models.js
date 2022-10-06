@@ -22,6 +22,7 @@ class Entity {
     }
     draw(){
         fill(this.color)
+        strokeWeight(0)
         circle(this.position.x, this.position.y, this.radius)
     }
     static createNew(x = 0, y = 0, color){

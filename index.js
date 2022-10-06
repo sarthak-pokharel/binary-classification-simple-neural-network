@@ -10,7 +10,8 @@ let entities = [];
 let mode = 'red'; // red/blue/test
 let RED = "#700", BLUE = "#007";
 
-function mouseClicked(){
+function mouseClicked(e){
+    if(!e.target.classList.contains('p5Canvas')) return;
     let p = new Vector(mouseX, mouseY);
     switch(mode){
         case "red":
@@ -20,9 +21,7 @@ function mouseClicked(){
             entities.push( Entity.createNew(p.x,p.y, BLUE) ) ;
             break;
         case "test":
-            let outp = net.run(normalizeInput(new Vector(mouseX, mouseY)));
-            console.log(outp[0])
-            entities.push( Entity.createNew(mouseX, mouseY, outp[0]<=0.5?RED:BLUE) );
+            showTestFor(mouseX, mouseY);
             break;
     }
 }
@@ -47,6 +46,7 @@ function Main(){
     $("#cred").addEventListener('click', ()=>{ mode = 'red'; });
     $("#cblue").addEventListener('click', ()=>{ mode = 'blue'; });
     $("#test").addEventListener('click', ()=>{ mode = 'test'; });
+    $("#testfull").addEventListener('click', testFullCanvas);
     
     net = new brain.NeuralNetwork();
 }
@@ -72,3 +72,22 @@ function train(){
     console.log("training complete");
 
 }
+
+function showTestFor(x,y){
+    let outp = net.run(normalizeInput(new Vector(x,y)));
+    // console.log(outp[0]);
+    let testEntry = Entity.createNew(x,y, outp[0]<=0.5?RED:BLUE);
+    entities.push( testEntry );
+}
+
+
+function testFullCanvas(){
+    let chunks = Number(prompt("Enter number of canvas division",20)); //divisions
+    for(let j = 0; j<=height; j+= height/chunks){
+        for(let i = 0; i<=width; i+=width/chunks){
+            // console.log("showT",i,j)
+            showTestFor(i,j);
+        }
+    }
+}
+
