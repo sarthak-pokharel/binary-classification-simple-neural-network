@@ -11,7 +11,7 @@ let abstract_entries = []; let ABSTRACT_ENTITY_RADIUS = 4;
 let mode = 'red'; // red/blue/test
 let RED = "#700", BLUE = "#007";
 let HIDDEN_LAYERS_CONF = [3];
-let MAX_ITERATIONS = 200000;
+let MAX_ITERATIONS = 400000;
 let FULL_TEST_CHUNKS = 100;
 
 
