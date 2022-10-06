@@ -10,7 +10,9 @@ let tocalc_entries = [], TOCALC_ENTITY_RADIUS = 10;
 let abstract_entries = []; let ABSTRACT_ENTITY_RADIUS = 4;
 let mode = 'red'; // red/blue/test
 let RED = "#700", BLUE = "#007";
-let HIDDEN_LAYERS_CONF = [8,16,8];
+let HIDDEN_LAYERS_CONF = [3];
+let MAX_ITERATIONS = 200000;
+let FULL_TEST_CHUNKS = 100;
 
 
 function mouseClicked(e){
@@ -65,7 +67,8 @@ function normalizeOutput(color){
 function train(){
 
     net = new brain.NeuralNetwork({ //Normally initialization is done once but for variable config, this is being multilpe times
-        hiddenLayers:HIDDEN_LAYERS_CONF
+        hiddenLayers:HIDDEN_LAYERS_CONF,
+        iterations: MAX_ITERATIONS
     });
 
 
@@ -94,7 +97,7 @@ function showTestFor(x,y){
 
 
 function testFullCanvas(){
-    let chunks = Number(prompt("Enter number of canvas division",100)); //divisions
+    let chunks = Number(FULL_TEST_CHUNKS); //divisions
     abstract_entries = [];
     for(let j = 0; j<=height; j+= height/chunks){
         for(let i = 0; i<=width; i+=width/chunks){
