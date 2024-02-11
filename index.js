@@ -58,10 +58,10 @@ function Main(){
     });
 }
 function normalizeInput(pos){
-    return [pos.x/width, pos.y/height]
+    return [pos.x/width, pos.y/height];
 }
 function normalizeOutput(color){
-    return [color==RED?0:1]
+    return [color==RED?0:1];
 }
 
 function train(){
